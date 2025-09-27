@@ -27,7 +27,7 @@
 import React, { useState } from "react";
 import Card from "@/components/common/Card";
 import PostModal from "@/components/common/PostModal";
-
+import Header from "@/components/layout/Header";
 interface Post {
   title: string;
   content: string;
@@ -46,6 +46,7 @@ const Home: React.FC = () => {
 
   return (
     <main className="p-6">
+        <Header />
       {/* Button to open modal */}
       <div className="mb-6">
         <button
