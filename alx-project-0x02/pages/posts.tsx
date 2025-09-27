@@ -19,34 +19,16 @@
 
 
 // pages/posts.tsx
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Header from "@/components/layout/Header";
 import PostCard from "@/components/common/PostCard";
 import { type PostProps } from "@/interfaces";
 
-const Posts: React.FC = () => {
-  const [posts, setPosts] = useState<PostProps[]>([]);
+interface PostsPageProps {
+  posts: PostProps[];
+}
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-        const data = await res.json();
-        const formattedPosts: PostProps[] = data.map((post: any) => ({
-          id: post.id,
-          title: post.title,
-          content: post.body,
-          userId: post.userId,
-        }));
-        setPosts(formattedPosts);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
+const Posts: React.FC<PostsPageProps> = ({ posts }) => {
   return (
     <>
       <Header />
@@ -56,10 +38,10 @@ const Posts: React.FC = () => {
           {posts.map((post) => (
             <PostCard
               key={post.id}
+              id={post.id}
               title={post.title}
               content={post.content}
               userId={post.userId}
-              id={post.id}
             />
           ))}
         </div>
@@ -69,3 +51,22 @@ const Posts: React.FC = () => {
 };
 
 export default Posts;
+
+// ✅ Next.js data fetching (SSG)
+export async function getStaticProps() {
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const data = await res.json();
+
+  const posts: PostProps[] = data.map((post: any) => ({
+    id: post.id,
+    title: post.title,
+    content: post.body,
+    userId: post.userId,
+  }));
+
+  return {
+    props: {
+      posts,
+    },
+  };
+}
